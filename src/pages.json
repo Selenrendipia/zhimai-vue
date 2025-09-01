@@ -1,0 +1,47 @@
+{
+  "pages": [
+    {
+      "path": "pages/index",
+      "type": "home",
+      "name": "home",
+      "style": {
+        "navigationStyle": "default",
+        "navigationBarTitleText": "首页"
+      }
+    }
+  ],
+  "globalStyle": {
+    "backgroundColor": "@bgColor",
+    "backgroundColorBottom": "@bgColorBottom",
+    "backgroundColorTop": "@bgColorTop",
+    "backgroundTextStyle": "@bgTxtStyle",
+    "navigationBarBackgroundColor": "@titleBgColor",
+    "navigationBarTextStyle": "@titleTxtStyle",
+    "navigationBarTitleText": "Uni Creator",
+    "enablePullDownRefresh": false,
+    "onReachBottomDistance": 50
+  },
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^wd-(.*)": "wot-design-uni/components/wd-$1/wd-$1.vue"
+    }
+  },
+  "middleware": [],
+  "subPackages": [
+    {
+      "root": "pages-sub",
+      "pages": [
+        {
+          "path": "demo/index",
+          "type": "page",
+          "name": "demo",
+          "style": {
+            "navigationStyle": "default",
+            "navigationBarTitleText": "分包页面 标题"
+          }
+        }
+      ]
+    }
+  ]
+}

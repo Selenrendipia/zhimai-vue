@@ -1,0 +1,31 @@
+{
+  "univ3": {
+    "prefix": "univ3",
+    "body": [
+      "<route lang=\"json5\" type=\"page\">",
+      "  {",
+      "    name: '${1:name}',",
+      "    style: {",
+      "      navigationStyle: 'default',",
+      "      navigationBarTitleText: '${2:title}',",
+      "    }",
+      "  }",
+      "</route>",
+      "",
+      "<template>",
+      "  <view class=\"\">",
+      "",
+      "  </view>",
+      "</template>",
+      "",
+      "<script setup lang=\"ts\">",
+      "",
+      "</script>",
+      "",
+      "<style lang=\"scss\" scoped>",
+      "",
+      "</style>"
+    ],
+    "description": "uniapp vue3 页面模板"
+  }
+} 
