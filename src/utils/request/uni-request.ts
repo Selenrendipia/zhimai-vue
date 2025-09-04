@@ -1,13 +1,21 @@
+import AppConfig from '../../config.ts'
+// 请求超时时间(默认5s)
+const timeout = 5000
 export function http<T>(options: CustomRequestOptions) {
+  // 从存储中获取token
+  const token = uni.getStorageSync('token')
   return new Promise<ApiResponse<T>>((resolve, reject) => {
     uni.request({
       ...options,
       dataType: 'json',
       // #ifndef MP-WEIXIN
       responseType: 'json',
+      timeout,
+      header: { token },
       // #endif
       // 响应成功
       success(res: UniApp.RequestSuccessCallbackResult) {
+        console.log('res', res)
         if (res.statusCode >= 200 && res.statusCode < 300) {
           resolve(res.data as ApiResponse<T>)
         } else if (res.statusCode === 401 || res.statusCode === 403) {

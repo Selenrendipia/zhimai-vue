@@ -1,6 +1,11 @@
 import type { MethodType } from 'alova'
-import { Method } from 'alova'
+// import { Method } from 'alova'
 import alovaInst from './alova'
+import AppConfig from '../../config.ts'
+// 请求超时时间(默认5s)
+const globalTimeout = 5000
+// 从存储中获取token
+const token = uni.getStorageSync('token')
 
 /**
  * 请求方法封装
@@ -19,12 +24,12 @@ export function request<T = any>(
   timeout?: number
 ) {
   return alovaInst.Request<ApiResponse<T>>({
-    url,
+    url: AppConfig.baseURL + url,
     method,
     data,
     params,
-    headers,
-    timeout
+    headers: headers || { token },
+    timeout: timeout || globalTimeout
   })
 }
 
