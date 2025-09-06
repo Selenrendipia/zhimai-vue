@@ -13,7 +13,7 @@ export default defineUniPages({
     backgroundColorTop: '@bgColorTop',
     backgroundTextStyle: '@bgTxtStyle',
     navigationBarBackgroundColor: '@titleBgColor',
-    navigationBarTextStyle: '@titleTxtStyle',
+    navigationBarTextStyle: '@titleTextStyle',
     navigationBarTitleText: 'Uni Creator',
     // navigationStyle: 'custom',
 
