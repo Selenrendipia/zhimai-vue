@@ -1,22 +1,51 @@
 {
   "pages": [
     {
-      "path": "pages/index",
+      "path": "pages/index/index",
       "type": "home",
-      "name": "home",
+      "name": "info",
       "style": {
         "navigationStyle": "default",
-        "navigationBarTitleText": "首页"
+        "navigationBarTitleText": "信息资讯"
+      }
+    },
+    {
+      "path": "pages/self-center/index",
+      "type": "page",
+      "name": "self-center",
+      "style": {
+        "navigationStyle": "default",
+        "navigationBarTitleText": "个人中心"
       }
     }
   ],
+  "tabBar": {
+    "color": "#2c2c2c",
+    "selectedColor": "#2785FF",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "static/tabbar/info.png",
+        "selectedIconPath": "static/tabbar/info-active.png",
+        "text": "信息资讯"
+      },
+      {
+        "pagePath": "pages/self-center/index",
+        "iconPath": "static/tabbar/self.png",
+        "selectedIconPath": "static/tabbar/self-active.png",
+        "text": "个人中心"
+      }
+    ]
+  },
   "globalStyle": {
     "backgroundColor": "@bgColor",
     "backgroundColorBottom": "@bgColorBottom",
     "backgroundColorTop": "@bgColorTop",
     "backgroundTextStyle": "@bgTxtStyle",
     "navigationBarBackgroundColor": "@titleBgColor",
-    "navigationBarTextStyle": "@titleTxtStyle",
+    "navigationBarTextStyle": "@titleTextStyle",
     "navigationBarTitleText": "Uni Creator",
     "enablePullDownRefresh": false,
     "onReachBottomDistance": 50
@@ -28,20 +57,5 @@
     }
   },
   "middleware": [],
-  "subPackages": [
-    {
-      "root": "pages-sub",
-      "pages": [
-        {
-          "path": "demo/index",
-          "type": "page",
-          "name": "demo",
-          "style": {
-            "navigationStyle": "default",
-            "navigationBarTitleText": "分包页面 标题"
-          }
-        }
-      ]
-    }
-  ]
+  "subPackages": []
 }

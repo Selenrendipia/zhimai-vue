@@ -10,8 +10,8 @@
     "tabBorderStyle": "black",
     "tabFontColor": "#1f2937",
     "tabSelectedColor": "#ff6b00",
-    "titleBgColor": "#ffffff",
-    "titleTxtStyle": "black"
+    "titleBgColor": "#2785FF",
+    "titleTextStyle": "white"
   },
   "dark": {
     "bgColor": "#181818",
@@ -25,6 +25,6 @@
     "tabFontColor": "#f3f4f6",
     "tabSelectedColor": "#ff6b00",
     "titleBgColor": "#000000",
-    "titleTxtStyle": "white"
+    "titleTextStyle": "white"
   }
 }

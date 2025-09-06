@@ -118,20 +118,62 @@ export default {
 ```
 
 ### 添加新页面
-
-在 `src/pages` 目录下创建 Vue 文件，并添加 route 块：name必须全局唯一
-
-```vue
-<route lang="json5" type="page">
+**tabBar页面放置在主包中，其他子页面放置在分包中**
+1. 在 `src/page.json`中添加以下代码
+```json
   {
-    name: 'pageName',
-    style: {
-      navigationStyle: 'default',
-      navigationBarTitleText: '页面标题',
+    // 页面路由配置
+    "pages": [
+      ...,
+      {
+        "path": "pages/XXX/index",         //自定义文件夹
+        //不会被识别，约定：home-首页 page-普通页面 sub-分包页面
+        "type": "page",
+        "name": "XXX",                     //唯一路由名
+        "style": {
+          "navigationStyle": "default",
+          "navigationBarTitleText": "XX"   //tabBar名
+        }
+      }
+    ],
+    // tabBar配置
+    "tabBar": {
+      ...,
+      "list": [
+        ...,
+        {
+          "pagePath": "同page的path",
+          "iconPath": "static/tabbar/XX.png",     //tabBar未激活时的图片
+          "selectedIconPath": "static/tabbar/XX-active.png",  // 激活时的图片
+          "text": "个人中心"
+        }
+      ]
     },
+    // 分包页面路径
+    "subPackages": [
+      {
+        "root": "subPackages",    //分包的根路径
+        "pages": [
+          // 参数跟上面的pages一致
+        ]
+      }
+    ]
   }
-</route>
+```
 
+补充：
+```js
+// pages中type的使用
+const routes = useRouter().getRoutes()
+const homePage = routes.find(r => r.type === 'home')
+
+if (currentRoute.meta.type === 'home') {
+  // 显示某些组件
+}
+
+```
+2. 在 `src/pages` 目录下创建对应的 文件夹 和 Vue 文件
+```vue
 <template>
   <view class="">
     <!-- 页面内容 -->
@@ -340,6 +382,16 @@ UnoCSS 支持变体组合，可以更简洁地编写复杂样式：
 <view class="text-primary bg-primary/10">
   <!-- 使用主题色文本和10%透明度的主题色背景 -->
 </view>
+```
+
+#### 适配暗黑模式
+theme.json中设置背景主题色的参数
+manifest.json中设置：
+```json
+{
+    "darkmode": true,
+    "themeLocation": "theme.json"
+  }
 ```
 
 #### 指令使用
