@@ -7,4 +7,4 @@ export default {
   appDescription: 'uniapp-vite-template',
   appVersion: '1.0.0',
   appVersionCode: '100'
-} as AppConfig
+} as const;

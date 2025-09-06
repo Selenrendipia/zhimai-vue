@@ -1,11 +1,10 @@
 import type { MethodType } from 'alova'
+import { getToken } from '@/utils/token'
 // import { Method } from 'alova'
 import alovaInst from './alova'
-import AppConfig from '../../config.ts'
+import AppConfig from '@/config'
 // 请求超时时间(默认5s)
 const globalTimeout = 5000
-// 从存储中获取token
-const token = uni.getStorageSync('token')
 
 /**
  * 请求方法封装
@@ -23,12 +22,14 @@ export function request<T = any>(
   headers?: Record<string, string>,
   timeout?: number
 ) {
+  // const token = getToken()
+  // const header = headers || { Authorization: `Bearer ${token}` }
   return alovaInst.Request<ApiResponse<T>>({
-    url: AppConfig.baseURL + url,
+    url: `${AppConfig?.baseURL}/api${url}`,
     method,
     data,
     params,
-    headers: headers || { token },
+    headers: headers,
     timeout: timeout || globalTimeout
   })
 }
