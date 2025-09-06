@@ -45,7 +45,7 @@ function handleSuccess(response: UniResponse, method: Method) {
   }
 
   const { data, code, msg } = rawData as ApiResponse<any>
-  if (code !== 0) {
+  if (code !== 200) {
     toast.error(msg || '请求失败')
     throw new Error(msg || '请求失败')
   }
