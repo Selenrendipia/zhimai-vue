@@ -1,8 +1,11 @@
 import type { MethodType } from 'alova'
-import { getToken } from '@/utils/token'
+import AppConfig from '@/config'
+import { useGlobalToast } from '@/hooks/useGlobalToast'
+import { getToken, removeToken } from '@/utils/token'
 // import { Method } from 'alova'
 import alovaInst from './alova'
-import AppConfig from '@/config'
+
+const globalToast = useGlobalToast()
 // 请求超时时间(默认5s)
 const globalTimeout = 5000
 
@@ -20,16 +23,26 @@ export function request<T = any>(
   data?: Record<string, any>,
   params?: Record<string, any>,
   headers?: Record<string, string>,
-  timeout?: number
+  timeout?: number,
+  withAuth?: boolean
 ) {
-  // const token = getToken()
-  // const header = headers || { Authorization: `Bearer ${token}` }
+  const finalHeaders = { ...headers }
+  if (withAuth) {
+    const token = getToken()
+    if (token) {
+      finalHeaders.Authorization = `Bearer ${token}`
+    } else {
+      // 没token，要重新登陆
+      globalToast.error('登录已过期，请重新登录')
+    }
+  }
+
   return alovaInst.Request<ApiResponse<T>>({
     url: `${AppConfig?.baseURL}/api${url}`,
     method,
     data,
     params,
-    headers: headers,
+    headers: finalHeaders || null,
     timeout: timeout || globalTimeout
   })
 }
@@ -44,10 +57,11 @@ export function request<T = any>(
 export function get<T = any>(
   url: string,
   params?: Record<string, any>,
+  withAuth?: boolean,
   headers?: Record<string, string>,
   timeout?: number
 ) {
-  return request<T>(url, 'GET', undefined, params, headers, timeout)
+  return request<T>(url, 'GET', undefined, params, headers, timeout, withAuth)
 }
 
 /**
@@ -60,10 +74,11 @@ export function get<T = any>(
 export function post<T = any>(
   url: string,
   data?: Record<string, any>,
+  withAuth?: boolean,
   headers?: Record<string, string>,
   timeout?: number
 ) {
-  return request<T>(url, 'POST', data, undefined, headers, timeout)
+  return request<T>(url, 'POST', data, undefined, headers, timeout, withAuth)
 }
 
 /**
@@ -76,10 +91,11 @@ export function post<T = any>(
 export function put<T = any>(
   url: string,
   data?: Record<string, any>,
+  withAuth?: boolean,
   headers?: Record<string, string>,
   timeout?: number
 ) {
-  return request<T>(url, 'PUT', data, undefined, headers, timeout)
+  return request<T>(url, 'PUT', data, undefined, headers, timeout, withAuth)
 }
 
 /**
@@ -92,8 +108,9 @@ export function put<T = any>(
 export function del<T = any>(
   url: string,
   data?: Record<string, any>,
+  withAuth?: boolean,
   headers?: Record<string, string>,
   timeout?: number
 ) {
-  return request<T>(url, 'DELETE', data, undefined, headers, timeout)
+  return request<T>(url, 'DELETE', data, undefined, headers, timeout, withAuth)
 }

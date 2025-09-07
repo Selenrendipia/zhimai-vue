@@ -1,64 +1,58 @@
-import type { ToastOptions } from 'wot-design-uni/components/wd-toast/types'
-import { getCurrentPath } from '@/utils'
+import { defineStore } from 'pinia'
 
-const defaultOptions: ToastOptions = {
-  duration: 3000,
-  show: false
+interface GlobalToastOptions {
+  title?: string
+  icon?: 'success' | 'error' | 'loading' | 'none'
+  duration?: number
+  mask?: boolean
 }
-export const useGlobalToast = defineStore('global-toast', () => {
-  const toastOptions = ref<ToastOptions>(defaultOptions)
-  const currentPage = ref<string>('')
 
-  // 打开Toast
-  const show = (option: ToastOptions | string) => {
-    currentPage.value = getCurrentPath()
-    const options = CommonUtil.deepMerge(defaultOptions, typeof option === 'string' ? { msg: option } : option) as ToastOptions
-    toastOptions.value = CommonUtil.deepMerge(options, {
-      show: true,
-      position: options.position || 'middle'
-    }) as ToastOptions
+export const useGlobalToast = defineStore('global-toast', () => {
+  const show = (option: GlobalToastOptions | string) => {
+    const opts = typeof option === 'string' ? { title: option } : option
+    uni.showToast({
+      title: opts.title || '',
+      icon: opts.icon || 'none',
+      duration: opts.duration || 2000,
+      mask: opts.mask ?? false
+    })
   }
-  // 成功提示
-  const success = (option: ToastOptions | string) => {
-    show(CommonUtil.deepMerge({
-      iconName: 'success',
-      duration: 1500
-    }, typeof option === 'string' ? { msg: option } : option) as ToastOptions)
+
+  const success = (option: GlobalToastOptions | string) => {
+    const opts = typeof option === 'string' ? { title: option } : option
+    show({ icon: 'success', duration: 1500, ...opts })
   }
-  // 关闭提示
-  const error = (option: ToastOptions | string) => {
-    show(CommonUtil.deepMerge({
-      iconName: 'error',
-      direction: 'vertical'
-    }, typeof option === 'string' ? { msg: option } : option) as ToastOptions)
+
+  const error = (option: GlobalToastOptions | string) => {
+    const opts = typeof option === 'string' ? { title: option } : option
+    show({ icon: 'error', ...opts })
   }
-  // 常规提示
-  const info = (option: ToastOptions | string) => {
-    show(CommonUtil.deepMerge({
-      iconName: 'info'
-    }, typeof option === 'string' ? { msg: option } : option) as ToastOptions)
+
+  const info = (option: GlobalToastOptions | string) => {
+    const opts = typeof option === 'string' ? { title: option } : option
+    show({ icon: 'none', ...opts })
   }
-  // 警告提示
-  const warning = (option: ToastOptions | string) => {
-    show(CommonUtil.deepMerge({
-      iconName: 'warning'
-    }, typeof option === 'string' ? { msg: option } : option) as ToastOptions)
+
+  const loading = (option: GlobalToastOptions | string) => {
+    const opts = typeof option === 'string' ? { title: option } : option
+    uni.showLoading({
+      title: opts.title || '加载中...',
+      mask: opts.mask ?? true
+    })
   }
-  // 关闭Toast
-  const close = () => {
-    toastOptions.value = defaultOptions
-    currentPage.value = ''
+
+  const hide = () => {
+    uni.hideToast()
+    uni.hideLoading()
   }
 
   return {
-    toastOptions,
-    currentPage,
     show,
     success,
     error,
     info,
-    warning,
-    close
+    loading,
+    hide
   }
 }, {
   persist: false

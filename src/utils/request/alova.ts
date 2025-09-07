@@ -43,11 +43,10 @@ function handleSuccess(response: UniResponse, method: Method) {
     toast.error(errMsg || '请求失败')
     throw new Error(errMsg || '请求失败')
   }
-
-  const { data, code, msg } = rawData as ApiResponse<any>
+  const { data, code, message } = rawData as ApiResponse<any>
   if (code !== 200) {
-    toast.error(msg || '请求失败')
-    throw new Error(msg || '请求失败')
+    toast.error(message || '请求失败')
+    throw new Error(message || '请求失败')
   }
   return data
 }

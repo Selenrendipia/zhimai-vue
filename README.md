@@ -192,6 +192,7 @@ if (currentRoute.meta.type === 'home') {
 ### API 请求
 
 项目使用 Alova 作为 HTTP 请求库，封装在 `src/utils/request` 目录中。
+**公共接口不需要添加额外的请求头，部分接口需要，则在设置请求api的第三个参数为true**
 
 #### 定义 API
 
@@ -258,6 +259,16 @@ console.log(userStore.isLogin)
 
 // 修改状态
 userStore.setLogin(true)
+```
+
+#### 使用 toast
+@/hooks/useGlobalToast.ts中封装了uni.Toast组件
+使用方法：
+```js
+import { useGlobalToast } from '@/hooks/useGlobalToast'
+const globalToast = useGlobalToast()
+
+globalToast.error('登录已过期，请重新登录')
 ```
 
 ### 路由导航

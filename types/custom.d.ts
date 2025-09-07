@@ -32,5 +32,6 @@ declare global {
     message?: string
     msg?: string
     data: T
+    [key: string]: any
   }
 }
