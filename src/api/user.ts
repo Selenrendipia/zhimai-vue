@@ -14,8 +14,9 @@ interface UserInfo {
  * 登录参数类型
  */
 interface LoginParams {
-  username: string
-  password: string
+  code: string
+  nickname: string
+  avatarUrl: string
 }
 
 /**
@@ -39,8 +40,8 @@ export function getUserInfo() {
  * @param params 登录参数
  * @returns 登录响应
  */
-export function login(params: LoginParams) {
-  return post<LoginResponse>('/user/login', params)
+export function loginApi(params: LoginParams) {
+  return post<any>('/user/wx-login', params)
 }
 
 /**

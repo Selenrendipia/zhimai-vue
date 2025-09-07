@@ -5,7 +5,12 @@ export const useUserStore = defineStore('user', () => {
     isLogin.value = val
   }
 
-  return { isLogin, setLogin }
+  const userProfile = {
+    nickname: '',
+    avatarUrl: ''
+  }
+
+  return { isLogin, setLogin, userProfile }
 }, {
   persist: true
 })
