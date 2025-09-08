@@ -17,6 +17,15 @@
         "navigationStyle": "default",
         "navigationBarTitleText": "个人中心"
       }
+    },
+    {
+      "path": "pages/search-page/index",
+      "type": "page",
+      "name": "search",
+      "style": {
+        "navigationStyle": "default",
+        "navigationBarTitleText": "搜索"
+      }
     }
   ],
   "tabBar": {
