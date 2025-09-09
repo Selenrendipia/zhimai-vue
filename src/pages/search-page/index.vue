@@ -3,33 +3,43 @@
     <wd-search
       v-model="searchContent"
       cancel-txt="搜索"
-      placeholder-left light
-      :maxlength="30"
+      placeholder="请输入"
+      placeholder-left
+      light :maxlength="30"
+      @focus="showHistory = true"
       @search="handleSearch"
       @cancel="handleSearch"
+      @clear="showHistory = true"
     />
-    <div class="px-40rpx py-30rpx">
-      <div class="item-center flex justify-between py-10rpx">
-        <text class="text-40rpx font-bold">
-          历史记录
-        </text>
-        <wd-icon name="delete-thin" size="40rpx" @click="clearHistory" />
-      </div>
-
-      <div>
-        <div
-          v-for="(item, index) in historyList"
-          :key="index"
-          class="my-30rpx flex items-center justify-between rounded-20rpx bg-white px-20rpx"
-        >
-          <text
-            class="w-550rpx overflow-hidden text-ellipsis py-20rpx"
-            @click="setSearch(item, index)"
-          >
-            {{ item }}
+    <div class="relative">
+      <!-- 历史记录 -->
+      <div v-show="showHistory" class="absolute box-border w-100% px-40rpx py-30rpx">
+        <div class="item-center flex justify-between py-10rpx">
+          <text class="text-40rpx font-bold">
+            历史记录
           </text>
-          <wd-icon name="close" @click="remove(index)" />
+          <wd-icon name="delete-thin" size="40rpx" @click="clearHistory" />
         </div>
+
+        <div>
+          <div
+            v-for="(item, index) in historyList"
+            :key="index"
+            class="my-30rpx flex items-center justify-between rounded-20rpx bg-white px-20rpx"
+          >
+            <text
+              class="w-550rpx overflow-hidden text-ellipsis py-20rpx"
+              @click="setSearch(item, index)"
+            >
+              {{ item }}
+            </text>
+            <wd-icon name="close" @click="remove(index)" />
+          </div>
+        </div>
+      </div>
+      <!-- 查询结果 -->
+      <div v-show="!showHistory" class="absolute box-border w-100% px-40rpx py-30rpx">
+        查询结果列表，封装复用活动列表组件
       </div>
     </div>
   </div>
@@ -45,22 +55,29 @@ const message = useMessage()
 
 const router = useRouter()
 const globalStore = useGlobalStore()
-const searchContent = ref()
+const searchContent = ref<string>('')
 const historyList = ref<Array<string>>([
   'aaaaa11',
   'bbbb222',
   'cccc3333333333333333333333333333333333333333333333333333333333333'
 ])
+const showHistory = ref<boolean>(true)
 
-// 点击/回车 搜索
+// 点击搜索/回车
 const handleSearch = debounce(() => {
+  search()
+}, 500)
+
+// 搜索
+function search() {
   searchContent.value = searchContent.value.trim()
   if (!searchContent.value)
     return
+  showHistory.value = false
   historyList.value.unshift(searchContent.value)
   limitLength()
   // 接口，待联调
-}, 500)
+}
 
 // 删除单个历史记录
 function remove(index: number) {
@@ -72,7 +89,7 @@ const setSearch = debounce((value: string, index: number) => {
   // 设置搜索内容，并将当前搜索内容更新到列表最前面
   searchContent.value = value
   remove(index)
-  handleSearch()
+  search()
 }, 500)
 
 // 限制历史记录的数量
