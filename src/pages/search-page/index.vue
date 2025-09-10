@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-30rpx">
+  <div class="pt-4">
     <wd-search
       v-model="searchContent"
       cancel-txt="搜索"
@@ -13,30 +13,33 @@
     />
     <div class="relative">
       <!-- 历史记录 -->
-      <div v-if="showHistory" class="absolute box-border w-100% px-40rpx py-30rpx">
-        <div class="item-center flex justify-between py-10rpx">
-          <text class="text-40rpx font-bold">
+      <div v-if="showHistory" class="absolute box-border w-100% px-5 py-4">
+        <div class="item-center flex justify-between py-1">
+          <div class="text-5 font-bold">
             历史记录
-          </text>
+          </div>
           <wd-icon name="delete-thin" size="40rpx" @click="clearHistory" />
         </div>
 
         <div>
           <div
             v-for="(item, index) in historyList" :key="index"
-            class="my-30rpx flex items-center justify-between rounded-20rpx bg-white px-20rpx"
+            class="my-4 flex items-center justify-between rounded-3 bg-white px-3"
           >
-            <text class="w-550rpx overflow-hidden text-ellipsis py-20rpx" @click="setSearch(item, index)">
+            <div class="w-70 overflow-hidden text-ellipsis py-3" @click="setSearch(item, index)">
               {{ item }}
-            </text>
+            </div>
             <wd-icon name="close" @click="remove(index)" />
           </div>
         </div>
       </div>
       <!-- 查询结果 -->
-      <div v-else class="absolute box-border w-100% px-40rpx py-30rpx">
-        查询结果列表，封装复用活动列表组件
-        <view v-for="index in num" :key="index" class="list-item">
+      <div v-else class="absolute box-border w-100% px-5 py-4">
+        <div class="py-4 text-5 font-bold">
+          搜索结果
+        </div>
+        <InfoList />
+        <!-- <view v-for="index in num" :key="index" class="list-item">
           <image
             src="https://img10.360buyimg.com/jmadvertisement/jfs/t1/70325/36/14954/36690/5dcd3e3bEee5006e0/aed1ccf6d5ffc764.png"
           />
@@ -44,7 +47,7 @@
             这是一条测试{{ index + 1 }}
           </view>
         </view>
-        <wd-loadmore :state="state" @reload="loadmore" />
+        <wd-loadmore :state="state" @reload="loadmore" /> -->
       </div>
     </div>
   </div>
@@ -55,8 +58,8 @@
 import { onLoad, onReachBottom } from '@dcloudio/uni-app'
 import { useMessage } from 'wot-design-uni'
 import { debounce } from 'wot-design-uni/components/common/util'
-
 import { historyConfig as config } from '@/config'
+import InfoList from './component/infoList.vue'
 
 const message = useMessage()
 
@@ -141,36 +144,3 @@ function loadmore() {
   }, 200)
 }
 </script>
-
-<style scoped lang="scss">
-.list-item {
-  position: relative;
-  display: flex;
-  padding: 10px 15px;
-  background: #fff;
-  color: #464646;
-}
-
-.list-item:after {
-  position: absolute;
-  display: block;
-  content: '';
-  height: 1px;
-  left: 0;
-  width: 100%;
-  bottom: 0;
-  background: #eee;
-  transform: scaleY(0.5);
-}
-image {
-  display: block;
-  width: 120px;
-  height: 78px;
-  margin-right: 15px;
-}
-.right {
-  -webkit-box-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-}
-</style>
