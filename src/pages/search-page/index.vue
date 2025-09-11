@@ -39,15 +39,6 @@
           搜索结果
         </div>
         <InfoList />
-        <!-- <view v-for="index in num" :key="index" class="list-item">
-          <image
-            src="https://img10.360buyimg.com/jmadvertisement/jfs/t1/70325/36/14954/36690/5dcd3e3bEee5006e0/aed1ccf6d5ffc764.png"
-          />
-          <view class="right">
-            这是一条测试{{ index + 1 }}
-          </view>
-        </view>
-        <wd-loadmore :state="state" @reload="loadmore" /> -->
       </div>
     </div>
   </div>
@@ -55,11 +46,10 @@
 </template>
 
 <script setup lang="ts">
-import { onLoad, onReachBottom } from '@dcloudio/uni-app'
 import { useMessage } from 'wot-design-uni'
 import { debounce } from 'wot-design-uni/components/common/util'
 import { historyConfig as config } from '@/config'
-import InfoList from './component/infoList.vue'
+import InfoList from './component/InfoList.vue'
 
 const message = useMessage()
 
@@ -118,29 +108,4 @@ function clearHistory() {
 onMounted(() => {
 
 })
-// 列表加载状态
-const state = ref<string>('loading')
-// 当前列表数量
-const num = ref<number>(0)
-// 列表最大数量（接口联调，可能会没有最大数量）
-const max = ref<number>(60)
-
-onReachBottom(() => {
-  if (num.value < max.value) {
-    loadmore()
-  } else if (num.value === max.value) {
-    state.value = 'finished'
-  }
-})
-
-onLoad(() => {
-  loadmore()
-})
-
-function loadmore() {
-  setTimeout(() => {
-    num.value = num.value + 15
-    state.value = 'loading'
-  }, 200)
-}
 </script>
