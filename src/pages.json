@@ -57,5 +57,20 @@
     }
   },
   "middleware": [],
-  "subPackages": []
+  "subPackages": [
+    {
+      "root": "subPackages",
+      "pages": [
+        {
+          "path": "collection/index",
+          "type": "page",
+          "name": "collection",
+          "style": {
+            "navigationStyle": "default",
+            "navigationBarTitleText": "我的收藏"
+          }
+        }
+      ]
+    }
+  ]
 }
