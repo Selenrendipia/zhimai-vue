@@ -10,7 +10,16 @@
       @search="handleSearch"
       @cancel="handleSearch"
       @clear="showHistory = true"
-    />
+    >
+      <template #prefix>
+        <wd-popover mode="menu" :content="searchTypeList" @menuclick="onClickSearchType">
+          <div>
+            <span class="search-type ml-2">{{ searchType.content }}</span>
+            <wd-icon name="fill-arrow-down" />
+          </div>
+        </wd-popover>
+      </template>
+    </wd-search>
     <div class="relative">
       <!-- 历史记录 -->
       <div v-if="showHistory" class="absolute box-border w-100% px-5 py-4">
@@ -63,6 +72,26 @@ const historyList = ref<Array<string>>([
 ])
 const showHistory = ref<boolean>(true)
 
+// 搜索类型
+const searchTypeList = [
+  {
+    content: '二课综测',
+    value: 1
+  },
+  {
+    content: '信息资讯',
+    value: 2
+  }
+]
+
+// 当前搜索类型
+const searchType = ref<any>(searchTypeList[0])
+
+// 切换搜索类型
+function onClickSearchType(option: any) {
+  searchType.value = option.item
+}
+
 // 点击搜索/回车
 const handleSearch = debounce(() => {
   search()
@@ -102,6 +131,8 @@ function limitLength() {
 function clearHistory() {
   message.confirm({ title: '确认清空所有历史记录？' }).then(() => {
     historyList.value = []
+  }).catch(() => {
+    // 取消
   })
 }
 
@@ -109,3 +140,15 @@ onMounted(() => {
 
 })
 </script>
+
+<style lang="scss" scoped>
+.search-type::after {
+  position: absolute;
+  content: '';
+  width: 1rpx;
+  right: -15rpx;
+  top: 5rpx;
+  bottom: 5rpx;
+  background: rgba(0, 0, 0, 0.25);
+}
+</style>
