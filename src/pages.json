@@ -1,85 +1,91 @@
 {
-  "pages": [
-    {
-      "path": "pages/index/index",
-      "type": "home",
-      "name": "info",
-      "style": {
-        "navigationStyle": "default",
-        "navigationBarTitleText": "信息资讯"
-      }
-    },
-    {
-      "path": "pages/self-center/index",
-      "type": "page",
-      "name": "self-center",
-      "style": {
-        "navigationStyle": "default",
-        "navigationBarTitleText": "个人中心"
-      }
-    },
-    {
-      "path": "pages/search-page/index",
-      "type": "page",
-      "name": "search",
-      "style": {
-        "navigationStyle": "default",
-        "navigationBarTitleText": "搜索"
-      }
-    }
-  ],
-  "tabBar": {
-    "color": "#2c2c2c",
-    "selectedColor": "#2785FF",
-    "backgroundColor": "#ffffff",
-    "borderStyle": "black",
-    "list": [
-      {
-        "pagePath": "pages/index/index",
-        "iconPath": "static/tabbar/info.png",
-        "selectedIconPath": "static/tabbar/info-active.png",
-        "text": "信息资讯"
-      },
-      {
-        "pagePath": "pages/self-center/index",
-        "iconPath": "static/tabbar/self.png",
-        "selectedIconPath": "static/tabbar/self-active.png",
-        "text": "个人中心"
-      }
-    ]
-  },
-  "globalStyle": {
-    "backgroundColor": "@bgColor",
-    "backgroundColorBottom": "@bgColorBottom",
-    "backgroundColorTop": "@bgColorTop",
-    "backgroundTextStyle": "@bgTxtStyle",
-    "navigationBarBackgroundColor": "@titleBgColor",
-    "navigationBarTextStyle": "@titleTextStyle",
-    "navigationBarTitleText": "Uni Creator",
-    "enablePullDownRefresh": false,
-    "onReachBottomDistance": 50
-  },
-  "easycom": {
-    "autoscan": true,
-    "custom": {
-      "^wd-(.*)": "wot-design-uni/components/wd-$1/wd-$1.vue"
-    }
-  },
-  "middleware": [],
-  "subPackages": [
-    {
-      "root": "subPackage",
-      "pages": [
-        {
-          "path": "category/index",
-          "type": "page",
-          "name": "category",
-          "style": {
-            "navigationStyle": "custom",
-            "navigationBarTitleText": "分类"
-          }
-        }
-      ]
-    }
-  ]
+	"pages": [
+		{
+			"path": "pages/index/index",
+			"type": "home",
+			"name": "info",
+			"style": {
+				"navigationStyle": "default",
+				"navigationBarTitleText": "信息资讯"
+			}
+		},
+		{
+			"path": "pages/self-center/index",
+			"type": "page",
+			"name": "self-center",
+			"style": {
+				"navigationStyle": "default",
+				"navigationBarTitleText": "个人中心"
+			}
+		},
+		{
+			"path": "pages/search-page/index",
+			"type": "page",
+			"name": "search",
+			"style": {
+				"navigationStyle": "default",
+				"navigationBarTitleText": "搜索"
+			}
+		}
+	],
+	"tabBar": {
+		"color": "#2c2c2c",
+		"selectedColor": "#2785FF",
+		"backgroundColor": "#ffffff",
+		"borderStyle": "black",
+		"list": [
+			{
+				"pagePath": "pages/index/index",
+				"iconPath": "static/tabbar/info.png",
+				"selectedIconPath": "static/tabbar/info-active.png",
+				"text": "信息资讯"
+			},
+			{
+				"pagePath": "pages/self-center/index",
+				"iconPath": "static/tabbar/self.png",
+				"selectedIconPath": "static/tabbar/self-active.png",
+				"text": "个人中心"
+			}
+		]
+	},
+	"globalStyle": {
+		"backgroundColor": "@bgColor",
+		"backgroundColorBottom": "@bgColorBottom",
+		"backgroundColorTop": "@bgColorTop",
+		"backgroundTextStyle": "@bgTxtStyle",
+		"navigationBarBackgroundColor": "@titleBgColor",
+		"navigationBarTextStyle": "@titleTextStyle",
+		"navigationBarTitleText": "Uni Creator",
+		"enablePullDownRefresh": false,
+		"onReachBottomDistance": 50
+	},
+	"easycom": {
+		"autoscan": true,
+		"custom": {
+			"^wd-(.*)": "wot-design-uni/components/wd-$1/wd-$1.vue"
+		}
+	},
+	"middleware": [],
+	"subPackages": [
+		{
+			"root": "subPackage",
+			"pages": [
+				{
+					"path": "category/index",
+					"type": "page",
+					"name": "category",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "分类"
+					}
+				},
+				{
+					"path": "activity-detail/index",
+					"style": {
+						"navigationBarTitleText": "活动详情"
+					}
+				}
+			]
+		}
+	]
 }

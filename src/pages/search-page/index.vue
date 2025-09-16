@@ -4,8 +4,8 @@
       v-model="searchContent"
       cancel-txt="搜索"
       placeholder="请输入"
-      placeholder-left
-      light :maxlength="30"
+
+      light placeholder-left :maxlength="30"
       @focus="showHistory = true"
       @search="handleSearch"
       @cancel="handleSearch"
@@ -49,7 +49,7 @@
 import { useMessage } from 'wot-design-uni'
 import { debounce } from 'wot-design-uni/components/common/util'
 import { historyConfig as config } from '@/config'
-import InfoList from './component/InfoList.vue'
+import InfoList from './component/infoList.vue'
 
 const message = useMessage()
 

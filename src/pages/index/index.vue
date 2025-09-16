@@ -64,7 +64,7 @@
     </view>
     <view class="info-list">
       <view class="space-y-4">
-        <view v-for="(item, index) in activities" :key="item.activity_id" class="rounded-lg bg-white p-4 shadow">
+        <view v-for="(item, index) in activities" :key="item.activity_id" class="rounded-lg bg-white p-4 shadow" @click="navigateToDetail(item.activity_id)">
           <view class="mb-2 flex items-center justify-between">
             <view class="flex items-center gap-2">
               <view class="h-8 w-8 flex items-center justify-center rounded-full bg-gray-200 text-lg text-gray-400">
@@ -269,6 +269,13 @@ function loadMoreActivities() {
   if (activitiesPage.value * activitiesPageSize.value < totalActivities.value) {
     fetchActivities(activitiesPage.value + 1)
   }
+}
+
+// 跳转活动详情
+function navigateToDetail(id: number) {
+  uni.navigateTo({
+    url: `/subPackage/activity-detail/index?id=${id}`
+  })
 }
 </script>
 
