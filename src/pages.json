@@ -70,13 +70,22 @@
             "navigationBarTitleText": "定时提醒"
           }
         },
-		{
+		    {
           "path": "remind-create/index",
           "type": "page",
           "name": "remind-create",
           "style": {
             "navigationStyle": "default",
             "navigationBarTitleText": "新建定时提醒"
+          }
+        },
+        {
+          "path": "remind-edit/index",
+          "type": "page",
+          "name": "remind-edit",
+          "style": {
+            "navigationStyle": "default",
+            "navigationBarTitleText": "编辑定时提醒"
           }
         }
       ]

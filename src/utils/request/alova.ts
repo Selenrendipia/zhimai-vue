@@ -44,7 +44,8 @@ function handleSuccess(response: UniResponse, method: Method) {
     throw new Error(errMsg || '请求失败')
   }
   const { data, code, message } = rawData as ApiResponse<any>
-  if (code !== 200) {
+  // 调用删除提醒接口成功时返回的code为0
+  if (code !== 200 && code !== 0) {
     toast.error(message || '请求失败')
     throw new Error(message || '请求失败')
   }

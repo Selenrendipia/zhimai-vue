@@ -65,7 +65,7 @@
         今天没有日程
       </view>
       <view
-        v-for="(item, index) in filteredList"
+        v-for="(item) in filteredList"
         :key="item.id"
         class="mb-3 flex rounded-lg bg-white p-3 shadow-sm"
       >
@@ -82,35 +82,35 @@
             <view class="font-bold" :class="{ 'line-through text-gray-400': item.finish }">
               {{ item.title }}
             </view>
-            <view class="text-sm text-gray-600" @click="toggleFinish(index)">
-              {{ item.finish ? '已完成' : '标记完成' }}
+            <view class="text-sm text-gray-600">
+              {{ item.finish ? '已完成' : '待完成' }}
             </view>
           </view>
           <view class="mt-1 text-xs text-gray-500">
-            {{ compareDateRange(item.beginDate, item.endDate) }}
+            {{ item.description }}
           </view>
           <navigator :url="detailUrl(item)">
             <view class="mt-2 text-sm text-blue-500">
-              查看 / 编辑
+              查看
             </view>
           </navigator>
         </view>
       </view>
     </view>
 
-    <view
-      v-if="showBackTop"
-      class="fixed bottom-20 right-4 h-10 w-10 flex items-center justify-center rounded-full bg-blue-500 text-white"
-      @click="backTop"
-    >
-      ↑
-    </view>
+    <!-- 返回顶部按钮已移除：未使用的状态与方法 -->
   </view>
 </template>
 
 <script setup lang="ts">
+import type { ReminderTypeConfigItem } from '@/types/remind'
+import { onShow } from '@dcloudio/uni-app'
 import { computed, onMounted, ref } from 'vue'
+import { getReminders, getReminderTypeConfigs } from '@/api/remind'
 
+// ------------------------
+// 基础状态与常量
+// ------------------------
 const today = new Date()
 const curYear = ref<number>(today.getFullYear())
 const curMonth = ref<number>(today.getMonth() + 1)
@@ -119,6 +119,52 @@ const curDay = ref<number>(today.getDate())
 const weeks = ['日', '一', '二', '三', '四', '五', '六']
 
 const calendarGrid = ref<number[]>([])
+
+// 远程类型配置映射（key 为后端返回的 type）
+const typeConfigMap = ref<Record<string, ReminderTypeConfigItem>>({})
+async function ensureTypeConfigs() {
+  if (Object.keys(typeConfigMap.value).length > 0) {
+    return
+  }
+  try {
+    const res = await getReminderTypeConfigs()
+    let list: any[] = []
+    if (Array.isArray(res)) {
+      list = res
+    } else if (res && Array.isArray((res as any).data)) {
+      list = (res as any).data
+    } else if (res && typeof res === 'object') {
+      const found = Object.values(res).find(v => Array.isArray(v)) as any[] | undefined
+      if (found) {
+        list = found
+      }
+    }
+    const map: Record<string, ReminderTypeConfigItem> = {}
+    for (const item of list) {
+      if (item && item.type) {
+        const { type, ...rest } = item
+        map[type] = rest as ReminderTypeConfigItem
+      }
+    }
+    typeConfigMap.value = map
+  } catch {
+    // 忽略错误，使用回退显示
+    typeConfigMap.value = {}
+  }
+}
+
+function typeName(type: string) {
+  return typeConfigMap.value[type]?.name || '提醒'
+}
+
+// 生成回退描述：custom 不拼接“提前XX分钟”
+function buildFallbackDesc(type: string, advance?: number) {
+  return `${typeName(type)}${
+    type === 'custom'
+      ? ''
+      : (typeof advance === 'number' && !Number.isNaN(advance) ? ` - 提前${advance}分钟` : '')
+  }`
+}
 
 function buildCalendar(year: number, month: number) {
   const first = new Date(year, month - 1, 1)
@@ -166,17 +212,79 @@ function onPickerChange(e: any) {
 }
 
 const events = ref<any[]>([])
-function loadSample() {
-  const y = curYear.value
-  const m = String(curMonth.value).padStart(2, '0')
-  events.value = [
-    { id: 1, title: '测试提醒 A', beginDate: `${y}-${m}-07`, endDate: `${y}-${m}-07`, beginTime: '10:00', endTime: '12:00', finish: false },
-    { id: 2, title: '测试提醒 B', beginDate: `${y}-${m}-08`, endDate: `${y}-${m}-08`, beginTime: '14:00', endTime: '15:00', finish: true }
-  ]
+
+// ISO -> 简单日期时间（不做时区换算，保持后端语义原样显示）
+function isoToDateTime(iso: string) {
+  if (!iso) {
+    return { date: '', time: '' }
+  }
+  // 直接按 ISO 文本截取，不进行时区换算，保持后端语义原样显示
+  // 期望格式：YYYY-MM-DDTHH:MM:SS(.sss)Z
+  const date = iso.slice(0, 10)
+  const time = iso.slice(11, 16)
+  return { date, time }
+}
+
+function mapReminderToEvent(reminder: any) {
+  // 描述：优先后端传入，其次按类型生成回退文案
+  const fallback = buildFallbackDesc(reminder.type, reminder.advance_minutes)
+  const description = (reminder.description && String(reminder.description).trim()) || fallback
+  // 开始/结束时间
+  const start = isoToDateTime(reminder.remind_start_time)
+  const end = isoToDateTime(reminder.remind_end_time)
+  return {
+    id: reminder.reminder_id,
+    title: (reminder.activity?.title) || reminder.title || '提醒',
+    beginDate: start.date,
+    endDate: end.date || start.date,
+    beginTime: start.time,
+    endTime: end.time || start.time,
+    description,
+    advanceMinutes: reminder.advance_minutes,
+    finish: !!reminder.sent,
+    raw: reminder,
+    activity_id: reminder.activity_id
+  }
+}
+
+async function loadReminders() {
+  try {
+    const res = await getReminders()
+    let list: any[] = []
+    if (Array.isArray(res)) {
+      list = res
+    } else if (res && Array.isArray((res as any).data)) {
+      list = (res as any).data
+    } else if (res && typeof res === 'object') {
+      // 兜底：查找对象里首个数组字段
+      const found = Object.values(res).find(v => Array.isArray(v)) as any[] | undefined
+      if (found) {
+        list = found
+      }
+    }
+    events.value = list.map(mapReminderToEvent)
+  } catch (e) {
+    // 接口失败时使用本地占位数据，避免页面空白
+    const y = curYear.value
+    const m = String(curMonth.value).padStart(2, '0')
+    events.value = [
+      { id: 1, title: '本地占位提醒 A', beginDate: `${y}-${m}-07`, endDate: `${y}-${m}-07`, beginTime: '10:00', endTime: '10:00', finish: false },
+      { id: 2, title: '本地占位提醒 B', beginDate: `${y}-${m}-08`, endDate: `${y}-${m}-08`, beginTime: '14:00', endTime: '14:00', finish: true }
+    ]
+  }
 }
 
 onMounted(() => {
-  loadSample()
+  ensureTypeConfigs().finally(() => {
+    loadReminders()
+  })
+})
+
+onShow(() => {
+  // 从创建页返回时触发，确保类型配置与列表刷新
+  ensureTypeConfigs().finally(() => {
+    loadReminders()
+  })
 })
 
 function hasEventOn(day: number) {
@@ -208,24 +316,30 @@ const filteredList = computed(() => {
   return events.value.filter((it: any) => it.beginDate === date || it.endDate === date)
 })
 
-function toggleFinish(index: number) {
-  const id = filteredList.value[index].id
-  const idx = events.value.findIndex((e: any) => e.id === id)
-  if (idx !== -1) {
-    events.value[idx].finish = !events.value[idx].finish
-  }
-}
-
 function detailUrl(item: any) {
-  return `/subPackages/pages/remind-create/remind-create?title=${encodeURIComponent(item.title)}&beginDate=${item.beginDate}&beginTime=${item.beginTime}&endDate=${item.endDate}&endTime=${item.endTime}&id=${item.id}`
+  const rawType = item.raw?.type || 'custom'
+  const adv = item.advanceMinutes
+  const baseDesc = (item.raw?.description && String(item.raw?.description).trim()) || ''
+  const fallbackDesc = buildFallbackDesc(rawType, adv)
+  const desc = baseDesc || fallbackDesc
+  const params: string[] = []
+  // 对参数进行编码，避免特殊字符破坏路由
+  params.push(`title=${encodeURIComponent(item.title || '')}`)
+  params.push(`description=${encodeURIComponent(desc)}`)
+  params.push(`beginDate=${encodeURIComponent(item.beginDate || '')}`)
+  params.push(`beginTime=${encodeURIComponent(item.beginTime || '')}`)
+  if (item.activity_id) {
+    params.push(`id=${encodeURIComponent(String(item.activity_id))}`)
+  }
+  if (item.id) {
+    params.push(`reminder_id=${encodeURIComponent(String(item.id))}`)
+  }
+  params.push(`advance_minutes=${encodeURIComponent(String(item.advanceMinutes ?? 30))}`)
+  params.push(`type=${encodeURIComponent(item.raw?.type || 'custom')}`)
+  return `/subPackage/remind-edit/index?${params.join('&')}`
 }
 
-function compareDateRange(b: string, e: string) {
-  if (!b || !e) {
-    return '-'
-  }
-  return `${b} - ${e}`
-}
+// compareDateRange 已废弃
 
 function shortMonthDay(d: string) {
   if (!d) {
@@ -237,10 +351,5 @@ function shortMonthDay(d: string) {
 
 function onCreate() {
   uni.navigateTo({ url: '/subPackage/remind-create/index' })
-}
-
-const showBackTop = ref(false)
-function backTop() {
-  uni.pageScrollTo({ scrollTop: 0, duration: 200 })
 }
 </script>
